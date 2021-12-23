@@ -12,16 +12,15 @@ const passport = require('./lib/auth.js')
 
 /**** CONSTANTES ****/
 const PORT = process.env.PORT || 8080
-const ERROR_CODE = 500
 
-/*** Misc ****/
-const Productos = require(__dirname + '/model/productoDaoMongo.js')
-const Mensajes = require(__dirname + '/model/mensajes.js')
-const productos = new Productos()
-const mensajes = new Mensajes()
 
+/*** Routers ****/
+const { checkAuth, getIndex } = require(__dirname + '/routers/routerMain.js')
 const { routerProductos } = require(__dirname + '/routers/routerProductos.js')
 const { routerProductosTest } = require(__dirname + '/routers/routerProductosTest.js')
+const { routerLogin, routerSignup, routerLogout } = require(__dirname + '/routers/routerAuth.js')
+const { wsConnection } = require(__dirname + '/routers/routerWebSocket.js')
+const { handleErrors } = require(__dirname + '/routers/routerErrors.js')
 
 
 /**** Inicio App ****/
@@ -29,46 +28,9 @@ const app = express()
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
 
-// Normalizr
-const authorSchema = new schema.Entity('author', {}, { idAttribute: 'mail' });
-const mensajesSchema = new schema.Entity('mensajes', {
-    mensajes: [ { author: authorSchema } ]
-});
-
-
-async function getMensajes(){
-    const listaMensajes = await mensajes.getAll()
-    const mensajesDenorm = {id: 'mensajes', mensajes: listaMensajes}
-    const mensajesNorm = normalize(mensajesDenorm, mensajesSchema);
-    return mensajesNorm
-}
-
-// Login
-function checkAuth(req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.redirect("/login");
-    }
-}
 
 // Configuracion WebSocket
-io.on('connection', async socket => {
-    console.log('Nuevo cliente conectado')
-
-    socket.emit('actualizarProductos', await productos.getAll())
-    socket.emit('actualizarMensajes', await getMensajes())
-
-    socket.on('nuevoProducto', async producto => {
-        await productos.save(producto)
-        io.sockets.emit('actualizarProductos', await productos.getAll())
-    })
-
-    socket.on('nuevoMensaje', async mensaje => {
-        await mensajes.save(mensaje)
-        io.sockets.emit('actualizarMensajes', await getMensajes())
-    })
-})
+io.on('connection', wsConnection)
 
 // Configuracion Vista
 app.engine('hbs', 
@@ -84,7 +46,6 @@ app.set('views', __dirname + '/views')
 
 
 // Middleware incio
-
 app.use(express.json())
 app.use('/', express.static(__dirname + '/public'))
 app.use(express.urlencoded({extended: true}))
@@ -101,36 +62,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routers
-app.get('/', checkAuth, (req, res) => {
-    const username = req.user.username
-    res.render('main', { nombre: username })
-})
+// Configuracion Rutas
+app.get('/', checkAuth, getIndex)
 
-// Login
-app.get('/login', (req, res) => {
-    if (req.isAuthenticated()){
-        res.redirect('/')
-    } else {
-        res.render('login')
-    }
-})
-app.post('/login', passport.authenticate('login', { successRedirect: '/', failureRedirect: '/fail-login' }))
-app.get('/fail-login', (req, res) => res.render('faillogin'))
-
-// Registracion
-app.get('/signup', (req, res) => res.render('signup'))
-app.post('/signup', passport.authenticate('signup', { successRedirect: '/', failureRedirect: '/fail-signup' }))
-app.get('/fail-signup', (req, res) => res.render('failsignup'))
-
-
-
-app.get('/logout', (req, res) => {
-    const username = req.user.username
-    req.logout()
-    res.render('logout', { nombre: username })
-    
-})
+app.use('/login', routerLogin)
+app.use('/signup', routerSignup)
+app.use('/logout', routerLogout)
 
 app.get('/productos-test', (req, res) => {
     res.render('productos-test')
@@ -140,13 +77,7 @@ app.use('/api/productos', routerProductos)
 app.use('/api/productos-test', routerProductosTest)
 
 // Middleware Errores
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    const { httpStatusCode = ERROR_CODE } = err
-    res.status(httpStatusCode).json({
-        error: err.message
-    });
-})
+app.use(handleErrors)
 
 // Inicio server
 const server = httpServer.listen(PORT, () => {
