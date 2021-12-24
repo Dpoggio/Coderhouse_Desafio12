@@ -4,13 +4,10 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
-const conn = require('./lib/connections.js')
+const cfg = require('./config.js')
 const passport = require('./lib/auth.js')
 const { Server: HttpServer } = require('http')
 const websocket = require('./lib/WebSocket.js')
-/**** CONSTANTES ****/
-const PORT = process.env.PORT || 8080
-
 
 /*** Routers ****/
 const { checkAuth, getIndex } = require(__dirname + '/routers/routerMain.js')
@@ -18,7 +15,6 @@ const { routerProductos } = require(__dirname + '/routers/routerProductos.js')
 const { routerProductosTest } = require(__dirname + '/routers/routerProductosTest.js')
 const { routerLogin, routerSignup, routerLogout } = require(__dirname + '/routers/routerAuth.js')
 const { handleErrors } = require(__dirname + '/routers/routerError.js')
-const { handleErrors } = require(__dirname + '/routers/routerErrors.js')
 
 
 /**** Inicio App ****/
@@ -44,8 +40,8 @@ app.use(express.json())
 app.use('/', express.static(__dirname + '/public'))
 app.use(express.urlencoded({extended: true}))
 app.use(session({
-    store: MongoStore.create({mongoUrl: conn.mongoSessionUrl}),
-    secret: 'CoderHouse!!!',
+    store: MongoStore.create({mongoUrl: cfg.CONN_MONGO_SESSION}),
+    secret: cfg.SESSION_SECRET,
     resave: true,
     rolling: true,
     saveUninitialized: true,
@@ -74,7 +70,7 @@ app.use('/api/productos-test', routerProductosTest)
 app.use(handleErrors)
 
 // Inicio server
-const server = httpServer.listen(PORT, () => {
+const server = httpServer.listen(cfg.PORT, () => {
     console.log(`Servidor HTTP escuchando en el puerto ${server.address().port}`)
 })
 server.on("error", error => console.error(`Error en servidor ${error}`))

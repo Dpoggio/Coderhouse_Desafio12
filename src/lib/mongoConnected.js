@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
-const conn = require('./connections.js')
+const cfg = require('../config.js')
 
 if (mongoose.connection.readyState == 0) {
-    mongoose.connect(conn.mongoDbURL, {
+    mongoose.connect(cfg.CONN_MONGO_DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })

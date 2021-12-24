@@ -1,8 +1,8 @@
-const conn = require('./lib/connections.js')
+const cfg = require('./config.js')
 
 async function main(){
-    const mariaDB = require('knex')(conn.mariaDb)
-    const sqlite = require('knex')(conn.sqlite)
+    const mariaDB = require('knex')(cfg.CONN_MARIA_DB)
+    const sqlite = require('knex')(cfg.CONN_SQLITE)
 
     
     //Creacion tabla Productos

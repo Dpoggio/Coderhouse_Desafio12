@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const Productos = require('./../model/productos.js')
+const cfg = require('./../config.js')
 
 const routerProductos = Router();
 
@@ -13,7 +14,7 @@ class IdNoNumerico extends Error {
     constructor() {
         super('id no numerico')
         this.name = this.constructor.name
-        this.httpStatusCode = 400
+        this.httpStatusCode = cfg.HTTP_BAD_REQUEST
         Error.captureStackTrace(this, this.constructor)
     }
 }
@@ -22,7 +23,7 @@ class ProductoNoEncontrado extends Error {
     constructor() {
         super('producto no encontrado')
         this.name = this.constructor.name
-        this.httpStatusCode = 404
+        this.httpStatusCode = cfg.HTTP_NOT_FOUND
         Error.captureStackTrace(this, this.constructor)
     }
 }

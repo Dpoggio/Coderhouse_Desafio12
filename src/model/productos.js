@@ -1,9 +1,9 @@
 const Contenedor = require('../lib/contenedorDB.js')
-const conn = require('../lib/connections.js')
+const cfg = require('../config.js')
 
 class Productos extends Contenedor{
     constructor(){
-        super(conn.mariaDb,'productos')
+        super(cfg.CONN_MARIA_DB,'productos')
     }
 }
 
