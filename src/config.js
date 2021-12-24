@@ -1,9 +1,22 @@
 const dotenv = require('dotenv')
 dotenv.config()
+const yargs = require('yargs/yargs')(process.argv.slice(2))
+
+const args = yargs
+    .options({
+      'port': {
+        alias: 'p',
+        describe: 'Puerto del servidor',
+        demandOption: false,
+        default: 8080
+      }
+    })
+    .help()
+    .argv
 
 module.exports = Object.freeze({
     // Misc
-    PORT: process.env.PORT || 8080,
+    PORT: args.port,
 
     // HTTP
     HTTP_NOT_FOUND: 404,
