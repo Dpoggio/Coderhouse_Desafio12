@@ -1,15 +1,13 @@
 
 const express = require('express')
-const { Server: HttpServer } = require('http')
-const { Server: IOServer } = require('socket.io')
+
 const handlebars = require('express-handlebars')
 const session = require('express-session')
-const { normalize, schema } = require("normalizr");
 const MongoStore = require('connect-mongo')
 const conn = require('./lib/connections.js')
 const passport = require('./lib/auth.js')
-
-
+const { Server: HttpServer } = require('http')
+const websocket = require('./lib/WebSocket.js')
 /**** CONSTANTES ****/
 const PORT = process.env.PORT || 8080
 
@@ -19,18 +17,14 @@ const { checkAuth, getIndex } = require(__dirname + '/routers/routerMain.js')
 const { routerProductos } = require(__dirname + '/routers/routerProductos.js')
 const { routerProductosTest } = require(__dirname + '/routers/routerProductosTest.js')
 const { routerLogin, routerSignup, routerLogout } = require(__dirname + '/routers/routerAuth.js')
-const { wsConnection } = require(__dirname + '/routers/routerWebSocket.js')
+const { handleErrors } = require(__dirname + '/routers/routerError.js')
 const { handleErrors } = require(__dirname + '/routers/routerErrors.js')
 
 
 /**** Inicio App ****/
 const app = express()
 const httpServer = new HttpServer(app)
-const io = new IOServer(httpServer)
-
-
-// Configuracion WebSocket
-io.on('connection', wsConnection)
+const io = websocket(httpServer)
 
 // Configuracion Vista
 app.engine('hbs', 
