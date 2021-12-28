@@ -25,12 +25,9 @@ module.exports = Object.freeze({
     HTTP_NOT_AUTHORIZED: 403,
     HTTP_BAD_REQUEST: 400,
 
-    // Custom Error Codes
-    // NOT_AUTH_ERRCODE: -1,
-    // ROUTE_NOT_FOUND_ERRCODE: -2,
-    // INVALID_ID_ERRCODE: -3,
-    // PROD_NOT_FOUND_ERRCODE: -4,
-    // CHRT_NOT_FOUND_ERRCODE: -5,
+    // Random
+    RANDOM_MAX_VALUE: 1000,
+    RANDOM_DEFAULT_CANT: 100000000,
 
     // Session
     SESSION_SECRET: process.env.SESSION_SECRET || 'CoderHouse!!!',

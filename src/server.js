@@ -14,6 +14,7 @@ const { checkAuth, getIndex } = require(__dirname + '/routers/routerMain.js')
 const { routerProductos } = require(__dirname + '/routers/routerProductos.js')
 const { routerProductosTest } = require(__dirname + '/routers/routerProductosTest.js')
 const { routerInfo } = require(__dirname + '/routers/routerInfo.js')
+const { routerRandoms } = require(__dirname + '/routers/routerRandoms.js')
 const { routerLogin, routerSignup, routerLogout } = require(__dirname + '/routers/routerAuth.js')
 const { handleErrors } = require(__dirname + '/routers/routerError.js')
 
@@ -65,6 +66,7 @@ app.get('/productos-test', (req, res) => {
 })
 
 app.use('/info', routerInfo)
+app.use('/api/randoms', routerRandoms)
 
 app.use('/api/productos', routerProductos)
 app.use('/api/productos-test', routerProductosTest)
