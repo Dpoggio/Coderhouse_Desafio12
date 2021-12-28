@@ -13,6 +13,7 @@ const websocket = require('./lib/WebSocket.js')
 const { checkAuth, getIndex } = require(__dirname + '/routers/routerMain.js')
 const { routerProductos } = require(__dirname + '/routers/routerProductos.js')
 const { routerProductosTest } = require(__dirname + '/routers/routerProductosTest.js')
+const { routerInfo } = require(__dirname + '/routers/routerInfo.js')
 const { routerLogin, routerSignup, routerLogout } = require(__dirname + '/routers/routerAuth.js')
 const { handleErrors } = require(__dirname + '/routers/routerError.js')
 
@@ -62,6 +63,8 @@ app.use('/logout', routerLogout)
 app.get('/productos-test', (req, res) => {
     res.render('productos-test')
 })
+
+app.use('/info', routerInfo)
 
 app.use('/api/productos', routerProductos)
 app.use('/api/productos-test', routerProductosTest)

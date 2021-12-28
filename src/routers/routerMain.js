@@ -1,6 +1,3 @@
-
-
-
 function checkAuth(req, res, next) {
     if (req.isAuthenticated()) {
         next();
