@@ -1,7 +1,7 @@
 {
-  "name": "coderhouse_desafio11",
+  "name": "coderhouse_desafio12",
   "version": "1.0.0",
-  "description": "Inicio de Sesion",
+  "description": "Usando el objeto Process",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dpoggio/Coderhouse_Desafio11.git"
+    "url": "git+https://github.com/Dpoggio/Coderhouse_Desafio12.git"
   },
   "author": "Demian Poggio",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Dpoggio/Coderhouse_Desafio11/issues"
+    "url": "https://github.com/Dpoggio/Coderhouse_Desafio12/issues"
   },
-  "homepage": "https://github.com/Dpoggio/Coderhouse_Desafio11#readme",
+  "homepage": "https://github.com/Dpoggio/Coderhouse_Desafio12#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "connect-mongo": "^4.6.0",
